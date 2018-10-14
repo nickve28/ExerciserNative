@@ -2,28 +2,14 @@ import React, { Component } from "react";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo"
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import Header from "../../../components/Header";
+import Page from "../../../components/Page";
+import Container from "../../../components/Container";
 
-const headerColor = "#0097A7";
 const borderColor = "#0097A7";
-const contentBackground = "#E0E0E0";
 const inputBackground = "#E5E5E5";
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: contentBackground,
-    flex: 2,
-    position: "relative"
-  },
-  header: {
-    height: 50, 
-    backgroundColor: headerColor, 
-    justifyContent: "center",
-    alignItems: "center"
-  },
-  content: {
-    padding: 20,
-    flex: 2
-  },
   input: {
     marginBottom: 2
   },
@@ -39,9 +25,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     left: 20,
-    bottom: 20 // same as padding
+    bottom: 20 // same as Container padding 
   }
-})
+});
 
 const LabeledInput = ({ label, onChange, ...props }) =>
   <View style={styles.input}>
@@ -66,18 +52,18 @@ class LoginPage extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text>Exerciser</Text>
-        </View>
-        <View style={styles.content}>
+      <Page>
+        <Header>
+          <Text>Login</Text>
+        </Header>
+        <Container>
           <LabeledInput label="username" onChange={this.onChange("username")} />
           <LabeledInput label="password" onChange={this.onChange("password")} secureTextEntry={true} />
           <View style={styles.loginButton}>
             <Button title="Login" onPress={this.login}>Login</Button>
           </View>
-        </View>
-      </View>
+        </Container>
+      </Page>
     );
   }
 }
