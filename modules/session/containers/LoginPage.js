@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import gql from "graphql-tag";
+import { graphql } from "react-apollo"
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
 
 const headerColor = "#0097A7";
@@ -55,6 +57,13 @@ class LoginPage extends Component {
 
   onChange = field => value => this.setState({ [field]: value });
 
+  login = () => {
+    const { username, password } = this.state;
+    const { mutate: login } = this.props;
+    
+    return login({ variables: { username, password } }).then(response => alert(JSON.stringify(response.data)));
+  };
+
   render() {
     return (
       <View style={styles.container}>
@@ -65,7 +74,7 @@ class LoginPage extends Component {
           <LabeledInput label="username" onChange={this.onChange("username")} />
           <LabeledInput label="password" onChange={this.onChange("password")} secureTextEntry={true} />
           <View style={styles.loginButton}>
-            <Button title="Login" onPress={() => alert(JSON.stringify(this.state))}>Login</Button>
+            <Button title="Login" onPress={this.login}>Login</Button>
           </View>
         </View>
       </View>
@@ -73,4 +82,10 @@ class LoginPage extends Component {
   }
 }
 
-export default LoginPage;
+const query = gql`mutation login($username: String!, $password: String!) {
+  login(username: $username, password: $password) {
+    id
+    token
+  }
+}`
+export default graphql(query)(LoginPage);
