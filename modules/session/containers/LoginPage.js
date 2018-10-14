@@ -47,11 +47,13 @@ class LoginPage extends Component {
 
   onChange = field => value => this.setState({ [field]: value });
 
-  login = () => {
+  login = async () => {
     const { username, password } = this.state;
-    const { mutate: login } = this.props;
+    const { mutate: login, onLoginSuccess } = this.props;
     
-    return login({ variables: { username, password } }).then(response => alert(JSON.stringify(response.data)));
+    const response = await login({ variables: { username, password } });
+    const { data } = response;
+    onLoginSuccess(data.login);
   };
 
   render() {
