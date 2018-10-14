@@ -6,8 +6,7 @@ const contentBackground = "#E0E0E0";
 const styles = StyleSheet.create({
   page: {
     backgroundColor: contentBackground,
-    flex: 2,
-    position: "relative"
+    flex: 2
   }
 });
 

@@ -10,6 +10,10 @@ const borderColor = "#0097A7";
 const inputBackground = "#E5E5E5";
 
 const styles = StyleSheet.create({
+  content: {
+    flex: 2,
+    position: "relative"
+  },
   input: {
     marginBottom: 2
   },
@@ -23,9 +27,9 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     position: "absolute",
-    width: "100%",
-    left: 20,
-    bottom: 20 // same as Container padding 
+    bottom: 0,
+    left: 0,
+    width: "100%"
   }
 });
 
@@ -57,10 +61,12 @@ class LoginPage extends Component {
           <Text>Login</Text>
         </Header>
         <Container>
-          <LabeledInput label="username" onChange={this.onChange("username")} />
-          <LabeledInput label="password" onChange={this.onChange("password")} secureTextEntry={true} />
-          <View style={styles.loginButton}>
-            <Button title="Login" onPress={this.login}>Login</Button>
+          <View style={styles.content}>
+            <LabeledInput label="username" onChange={this.onChange("username")} />
+            <LabeledInput label="password" onChange={this.onChange("password")} secureTextEntry={true} />
+            <View style={styles.loginButton}>
+              <Button title="Login" onPress={this.login}>Login</Button>
+            </View>
           </View>
         </Container>
       </Page>
