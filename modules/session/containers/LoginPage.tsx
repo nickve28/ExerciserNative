@@ -97,10 +97,10 @@ const query = gql`mutation login($username: String!, $password: String!) {
     id
     token
   }
-}`
+}`;
 
 interface ExportProps {
-  onLoginSuccess(payload: { id: number, token: string }): void,
+  onLoginSuccess(payload: { id: number, token: string }): void
 };
 
 export default graphql<ExportProps>(query)(LoginPage)
