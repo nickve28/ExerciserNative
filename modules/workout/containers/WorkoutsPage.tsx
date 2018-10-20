@@ -17,12 +17,19 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     width: "100%"
+  },
+  workout: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderColor: "gray",
+    borderWidth: 1
   }
 });
 
 interface Workout {
   id: string,
-  description: string
+  description: string,
+  workoutDate?: Date
 };
 
 interface Props {
@@ -33,7 +40,9 @@ interface Props {
 
 class WorkoutsPage extends Component<Props> {
   render() {
-    const { workouts } = this.props;
+    const { workouts, loading } = this.props;
+
+    if (loading) return null;
 
     return (
       <Page>
@@ -43,7 +52,10 @@ class WorkoutsPage extends Component<Props> {
         <Container>
           <View style={styles.content}>
             {workouts.map(workout =>
-              <Text key={workout.id}>{`${workout.id}-${workout.description}`}</Text>
+              <View key={workout.id} style={styles.workout}>
+                <Text>{workout.description}</Text>
+                <Text>{workout.workoutDate}</Text>
+              </View>
             )}
             <View style={styles.logoutButton}>
               <Button title="Logout" onPress={this.props.onLogoutClick}>Log out</Button>
@@ -56,8 +68,8 @@ class WorkoutsPage extends Component<Props> {
 }
 
 const mapProps = ({ data }: OptionProps<{}, {}, {}>) => ({
-  loading: get(data, "fetchRecentWorkouts.loading"),
-  workouts: get(data , "fetchRecentWorkouts.me.workouts", [])
+  loading: get(data, "loading"),
+  workouts: get(data, "me.workouts", [])
 });
 
 const query = gql`query fetchRecentWorkouts {
