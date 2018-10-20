@@ -1,7 +1,7 @@
 import React from "react";
 import { Component } from "react";
 import { AsyncStorage } from "react-native";
-import ApolloClient from 'apollo-client';
+import ApolloClient from "apollo-client";
 import { InMemoryCache } from "apollo-cache-inmemory";
 import { HttpLink } from "apollo-link-http";
 import { ApolloLink } from "apollo-link";
@@ -20,12 +20,10 @@ const defaultOptions = {
 
 const cache = new InMemoryCache();
 
-const createClient = getToken => {
+const createClient = (getToken: Function) => {
    // need to remove apollo boost and configure client here
   const authLink = setContext((_, { headers }) => {
-    // get the authentication token from local storage if it exists
     const token = getToken(); 
-    // return the headers to the context so httpLink can read them
     return {
       headers: {
         ...headers,
@@ -36,14 +34,29 @@ const createClient = getToken => {
 
   const httpLink = new HttpLink({ uri });
 
-  return new ApolloClient({
+  // TODO fix type definition
+  const apolloOptions: any = {
     link: ApolloLink.from([authLink, httpLink]),
     cache,
     defaultOptions
-  });
+  };
+  
+  return new ApolloClient(apolloOptions);
 };
 
-class App extends Component {
+interface Props {};
+
+interface State {
+  login?: {
+    token: string,
+    id: number
+  },
+  ready: boolean
+};
+
+class App extends Component<Props, State> {
+  client: any; // TODO apollo declaration?
+
   state = { login: null, ready: false };
 
   constructor(props) {
@@ -51,7 +64,6 @@ class App extends Component {
     this.client = createClient(this.getToken);
   }
 
-  // Needs to poll token and stuff
   async componentDidMount() {
     const login = await AsyncStorage.getItem("@login");
     this.setState({ 
@@ -77,7 +89,6 @@ class App extends Component {
   };
 
   render() {
-    const { render } = this.props;
     const { login, ready } = this.state;
     if (!ready) return null;
     

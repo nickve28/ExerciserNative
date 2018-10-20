@@ -1,4 +1,5 @@
 import React from "react";
+import { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 const contentBackground = "#E0E0E0";
@@ -10,7 +11,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const Page = ({ children }) =>
+export interface Props {
+  children: ReactNode
+};
+
+const Page = ({ children }: Props) =>
   <View style={styles.page}>
     {children}
   </View>;

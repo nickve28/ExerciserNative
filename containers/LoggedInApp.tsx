@@ -5,7 +5,15 @@ const pages = {
   workouts: WorkoutsPage
 };
 
-class LoggedInApp extends Component {
+export interface Props {
+  onLogoutClick: Function
+};
+
+interface State {
+  page: string
+};
+
+class LoggedInApp extends Component<Props, State> {
   state = { 
     page: "workouts"
   };

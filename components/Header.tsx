@@ -1,4 +1,5 @@
 import React from "react";
+import { ReactNode } from "react";
 import { StyleSheet, View } from "react-native";
 
 const headerColor = "#0097A7";
@@ -12,7 +13,11 @@ const styles = StyleSheet.create({
   }
 });
 
-const Header = ({ children }) =>
+export interface Props {
+  children: ReactNode
+};
+
+const Header = ({ children }: Props) =>
   <View style={styles.header}>
     {children}
   </View>;

@@ -1,4 +1,5 @@
-import React, { Component } from "react";
+import React from "react";
+import { Component } from "react";
 import gql from "graphql-tag";
 import { graphql } from "react-apollo"
 import { StyleSheet, Text, View, TextInput, Button } from "react-native";
@@ -39,7 +40,22 @@ const LabeledInput = ({ label, onChange, ...props }) =>
     <TextInput {...props} style={styles.inputArea} onChangeText={onChange} />
   </View>
 
-class LoginPage extends Component {
+interface Props {
+  onLoginSuccess(payload: { id: number, token: string }): void,
+  mutate(payload: { 
+    variables: { 
+      username: string, 
+      password: string 
+    } 
+  }): Promise<any>
+};
+
+interface State {
+  username: string,
+  password: string
+};
+
+class LoginPage extends Component<Props, State> {
   state = { 
     username: "",
     password: ""
@@ -82,4 +98,9 @@ const query = gql`mutation login($username: String!, $password: String!) {
     token
   }
 }`
-export default graphql(query)(LoginPage);
+
+interface ExportProps {
+  onLoginSuccess(payload: { id: number, token: string }): void,
+};
+
+export default graphql<ExportProps>(query)(LoginPage)

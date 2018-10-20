@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { StyleSheet, Text, View, Button } from "react-native";
 import gql from "graphql-tag";
-import { graphql } from "react-apollo"
+import get from "lodash.get";
+import { graphql, OptionProps } from "react-apollo"
 import Header from "../../../components/Header";
 import Page from "../../../components/Page";
 import Container from "../../../components/Container";
@@ -19,10 +20,20 @@ const styles = StyleSheet.create({
   }
 });
 
-class WorkoutsPage extends Component {
+interface Workout {
+  id: string,
+  description: string
+};
+
+interface Props {
+  loading: boolean,
+  workouts: Array<Workout>,
+  onLogoutClick(): void
+};
+
+class WorkoutsPage extends Component<Props> {
   render() {
-    const { data } = this.props;
-    const workouts = data.me && data.me.workouts || [];
+    const { workouts } = this.props;
 
     return (
       <Page>
@@ -44,6 +55,11 @@ class WorkoutsPage extends Component {
   }
 }
 
+const mapProps = ({ data }: OptionProps<{}, {}, {}>) => ({
+  loading: get(data, "fetchRecentWorkouts.loading"),
+  workouts: get(data , "fetchRecentWorkouts.me.workouts", [])
+});
+
 const query = gql`query fetchRecentWorkouts {
   me {
     workouts {
@@ -52,6 +68,9 @@ const query = gql`query fetchRecentWorkouts {
       workoutDate
     }
   }
-}`
+}`;
 
-export default graphql(query)(WorkoutsPage);
+const opts = {
+  props: mapProps
+};
+export default graphql(query, opts)(WorkoutsPage);
