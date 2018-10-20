@@ -1,13 +1,26 @@
 import React, { Component } from "react";
-import ApolloClient from 'apollo-boost';
+import { AsyncStorage } from "react-native";
+import ApolloClient from 'apollo-client';
+import { InMemoryCache } from "apollo-cache-inmemory";
+import { HttpLink } from "apollo-link-http";
+import { ApolloLink } from "apollo-link";
 import { ApolloProvider } from 'react-apollo';
+import { setContext } from "apollo-link-context";
 import LoginPage from "../modules/session/containers/LoginPage";
 import LoggedInApp from "./LoggedInApp";
-import { create } from "handlebars";
 
 const uri = "http://192.168.1.9:4000/api/graphql";
 
+const defaultOptions = {
+  watchQuery: {
+    fetchPolicy: "cache-and-network"
+  }
+};
+
+const cache = new InMemoryCache();
+
 const createClient = getToken => {
+   // need to remove apollo boost and configure client here
   const authLink = setContext((_, { headers }) => {
     // get the authentication token from local storage if it exists
     const token = getToken(); 
@@ -15,16 +28,18 @@ const createClient = getToken => {
     return {
       headers: {
         ...headers,
-        authorization: token ? `Bearer ${token}` : "",
+        authorization: token ? `Bearer ${token}` : ""
       }
     }
   });
 
-  const client = new ApolloClient({
-    uri
+  const httpLink = new HttpLink({ uri });
+
+  return new ApolloClient({
+    link: ApolloLink.from([authLink, httpLink]),
+    cache,
+    defaultOptions
   });
-  client.link.concat(authLink);
-  return client;
 };
 
 class App extends Component {
@@ -67,10 +82,12 @@ class App extends Component {
     
     return (
       <ApolloProvider client={this.client}>
-        login 
+        {login 
         ? <LoggedInApp onLogoutClick={this.logout} />
-        : <LoginPage onLoginSuccess={this.onLoginSuccess} />
+        : <LoginPage onLoginSuccess={this.onLoginSuccess} />}
       </ApolloProvider>
     );
   }
 }
+
+export default App;
