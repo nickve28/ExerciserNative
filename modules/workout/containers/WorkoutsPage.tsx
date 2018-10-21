@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Button, FlatList } from "react-native";
+import { StyleSheet, Text, View, Button, FlatList, TouchableOpacity } from "react-native";
 import gql from "graphql-tag";
 import get from "lodash.get";
 import { graphql, OptionProps } from "react-apollo"
@@ -51,7 +51,17 @@ interface Props {
 
 const addReactKey = (entities: Workout[]) => entities.map(entity => ({ ...entity, key: entity.id }));
 
+const WorkoutListItem = ({ workout, onPress }: { workout: Workout, onPress(): void }) =>
+  <TouchableOpacity onPress={onPress} style={styles.workout}>
+    <Text>{workout.description}</Text>
+    <Text>{workout.workoutDate}</Text>
+  </TouchableOpacity>
+
 class WorkoutsPage extends Component<Props> {
+  navigateWorkout = (workout: Workout) => () => {
+    alert(`stub navigate workout: ${workout.id}`);
+  };
+
   render() {
     const { workouts, loading } = this.props;
 
@@ -64,10 +74,7 @@ class WorkoutsPage extends Component<Props> {
         </Header>
         <FullWidthContainer>
           <FlatList data={addReactKey(workouts)} renderItem={({ item: workout }) =>
-            <View style={styles.workout}>
-              <Text>{workout.description}</Text>
-              <Text>{workout.workoutDate}</Text>
-            </View>
+            <WorkoutListItem workout={workout} onPress={this.navigateWorkout(workout)} />
           } />
         </FullWidthContainer>
         <Container>
